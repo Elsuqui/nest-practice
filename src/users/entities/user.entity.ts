@@ -14,9 +14,9 @@ export class User {
   @Column({ type: 'varchar' })
   role: string;
 
-  @CreateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
+  @CreateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP(6)'})
   createdAt : Date;
 
-  @UpdateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
+  @UpdateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP(6)'})
   updatedAt : Date;
 }
