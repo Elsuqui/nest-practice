@@ -1,4 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { User} from './user.entity';
 
 @Entity({name: 'customers'})
 export class Customer {
@@ -10,4 +11,14 @@ export class Customer {
   lastName: string;
   @Column({ type: 'varchar' })
   phone: string;
+
+  @CreateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
+  createdAt : Date;
+
+  @UpdateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP'})
+  updatedAt : Date;
+
+  @OneToOne(() => User , { nullable: true })
+  @JoinColumn()
+  user : User;
 }

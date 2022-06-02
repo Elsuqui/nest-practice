@@ -6,15 +6,41 @@ import { Order } from '../entities/order.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 import { ProductsService } from './../../products/services/products.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @InjectRepository(User) private userRepository : Repository<User>,
     private productsService: ProductsService,
     private configService: ConfigService,
   ) {}
 
-  private counterId = 1;
+  findAll() : Promise<User[]>{
+    return this.userRepository.find();
+  }
+
+  findOne(id : number) : Promise<User>{
+    return this.userRepository.findOne(id);
+  }
+
+  create(data: CreateUserDto) : Promise<User>{
+    const newUser = this.userRepository.create(data);
+    return this.userRepository.save(newUser);
+  }
+
+  async update(id: number, changes: UpdateUserDto) : Promise<User>{
+    const user = await this.userRepository.findOne(id);
+    this.userRepository.merge(user, changes);
+    return this.userRepository.save(user);
+  }
+
+  async remove(id : number) {
+    return this.userRepository.delete(id);
+  }
+
+  /*private counterId = 1;
   private users: User[] = [
     {
       id: 1,
@@ -76,5 +102,5 @@ export class UsersService {
       user,
       products: products,
     };
-  }
+  }*/
 }
