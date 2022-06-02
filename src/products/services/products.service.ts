@@ -1,23 +1,46 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Product } from './../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './../dtos/products.dtos';
 
 @Injectable()
 export class ProductsService {
-  private counterId = 1;
-  private products: Product[] = [
-    {
-      id: 1,
-      name: 'Producto 1',
-      description: 'lorem lorem',
-      price: 10000,
-      stock: 300,
-      image: 'https://i.imgur.com/U4iGx1j.jpeg',
-    },
-  ];
 
-  findAll() {
+  constructor(@InjectRepository(Product) private productRepo : Repository<Product>){}
+
+  async findAll(){
+    return await this.productRepo.find();
+  }
+
+  findOne(id: number){
+    return this.productRepo.findOne(id);
+  }
+
+  create(data: CreateProductDto){
+    /*newProduct.image = data.image;
+    newProduct.name = data.name;
+    newProduct.description = data.description;
+    newProduct.price = data.price;
+    newProduct.image = data.image;*/
+    // Create a new instance of product in memory, but it doesnt save it in database
+    const newProduct = this.productRepo.create(data);
+    return this.productRepo.save(newProduct);
+  }
+
+  async update(id: number, changes: UpdateProductDto){
+    const product = await this.productRepo.findOne(id);
+    // Try to update product information with changes comming in request
+    this.productRepo.merge(product, changes);
+    return this.productRepo.save(product);
+  }
+
+  remove(id: number){
+    return this.productRepo.delete(id);
+  }
+ 
+  /*findAll() {
     return this.products;
   }
 
@@ -56,5 +79,5 @@ export class ProductsService {
     }
     this.products.splice(index, 1);
     return true;
-  }
+  }*/
 }
