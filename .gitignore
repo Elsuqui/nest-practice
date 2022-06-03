@@ -105,3 +105,5 @@ dist
 
 #Environment variables
 *.env
+
+db/
