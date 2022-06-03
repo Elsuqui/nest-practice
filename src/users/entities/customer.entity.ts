@@ -18,7 +18,10 @@ export class Customer {
   @UpdateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP(6)'})
   updatedAt : Date;
 
-  @OneToOne(() => User , { nullable: true })
+  // Reference to user table one to one
+  // This field is the main reference column, it stores user id
+  // Define what is the field to link the relation
+  @OneToOne(() => User , (user) => user.customer, { nullable: true })
   @JoinColumn()
   user : User;
 }
