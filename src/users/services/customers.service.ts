@@ -5,11 +5,14 @@ import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { UsersService } from './users.service';
+
 @Injectable()
 export class CustomersService {
 
   constructor(
-    @InjectRepository(Customer) private customerRepo : Repository<Customer>
+    @InjectRepository(Customer) private customerRepo : Repository<Customer>,
+    private userService : UsersService
   ){}
 
   findAll() {
@@ -28,7 +31,7 @@ export class CustomersService {
     return customer;
   }
 
-  create(data: CreateCustomerDto) {
+  async create(data: CreateCustomerDto) {
     /*this.counterId = this.counterId + 1;
     const newCustomer = {
       id: this.counterId,
@@ -37,6 +40,10 @@ export class CustomersService {
     this.customers.push(newCustomer);
     return newCustomer;*/
     const newCustomer = this.customerRepo.create(data);
+    if(data.userId){
+      const user = await this.userService.findOne(data.userId);
+      newCustomer.user = user;
+    }
     return this.customerRepo.save(newCustomer);
   }
 

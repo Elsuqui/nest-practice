@@ -40,6 +40,12 @@ export class UsersService {
     return this.userRepository.delete(id);
   }
 
+  findBy(field : string, value: any){
+    return this.userRepository.findOne({
+      where: `${field} = '${value}'`
+    });
+  }
+
   /*private counterId = 1;
   private users: User[] = [
     {
