@@ -1,5 +1,15 @@
-import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { 
+  PrimaryGeneratedColumn, 
+  Column, 
+  Entity, 
+  CreateDateColumn, 
+  UpdateDateColumn, 
+  ManyToOne, 
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Brand } from './brand.entity';
+import { Category } from './category.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -7,27 +17,32 @@ export class Product {
   id: number;
 
   // Define column with options 
-  @Column({type: 'varchar', length: 255, unique: true})
+  @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
 
-  @Column({ type: 'text'})
+  @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'decimal'})
+  @Column({ type: 'decimal' })
   price: number;
 
-  @Column({ type: 'int'})
+  @Column({ type: 'int' })
   stock: number;
 
-  @Column({type: 'varchar', nullable: true})
+  @Column({ type: 'varchar', nullable: true })
   image: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)'})
-  created_at : Date;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
+  created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)'})
-  updated_at : Date;
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
+  updated_at: Date;
 
   @ManyToOne(() => Brand, (brand) => brand.products)
-  brand : Brand
+  brand: Brand;
+
+  @ManyToMany(() => Category, (category) => category.products)
+  // Solo debe ir de un lado de la relacion para crear la tabla ternaria
+  @JoinTable()
+  categories: Category[];
 }

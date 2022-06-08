@@ -13,7 +13,9 @@ export class BrandsService {
   ) { }
 
   findAll() {
-    return this.brandRepo.find();
+    return this.brandRepo.find({
+      relations: ['products']
+    });
   }
 
   findOne(id: number) {
