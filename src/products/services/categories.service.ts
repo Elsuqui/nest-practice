@@ -38,8 +38,8 @@ export class CategoriesService {
     return this.categoryRepo.save(updated);
   }
 
-  remove(id: number) {
-    const category = this.categoryRepo.findOne(id);
+  async remove(id: number) {
+    const category = await this.categoryRepo.findOne(id);
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
     }
