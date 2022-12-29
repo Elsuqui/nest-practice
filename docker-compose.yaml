@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=curso
+      - MYSQL_PASSWORD=course_user
+      - MYSQL_USER=course_user
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql

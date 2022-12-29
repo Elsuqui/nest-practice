@@ -4,21 +4,24 @@ import { Repository } from 'typeorm';
 
 import { Product } from './../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './../dtos/products.dtos';
+import { BrandsService } from './brands.service';
 
 @Injectable()
 export class ProductsService {
 
-  constructor(@InjectRepository(Product) private productRepo : Repository<Product>){}
+  constructor(@InjectRepository(Product) private productRepo: Repository<Product>, private brandService: BrandsService) { }
 
-  async findAll(){
-    return await this.productRepo.find();
+  async findAll() {
+    return await this.productRepo.find({
+      relations: ['brand']
+    });
   }
 
-  findOne(id: number){
+  findOne(id: number) {
     return this.productRepo.findOne(id);
   }
 
-  create(data: CreateProductDto){
+  async create(data: CreateProductDto) {
     /*newProduct.image = data.image;
     newProduct.name = data.name;
     newProduct.description = data.description;
@@ -26,20 +29,24 @@ export class ProductsService {
     newProduct.image = data.image;*/
     // Create a new instance of product in memory, but it doesnt save it in database
     const newProduct = this.productRepo.create(data);
+    if (data.brandId) {
+      const brand = await this.brandService.findOne(data.brandId);
+      newProduct.brand = brand;
+    }
     return this.productRepo.save(newProduct);
   }
 
-  async update(id: number, changes: UpdateProductDto){
+  async update(id: number, changes: UpdateProductDto) {
     const product = await this.productRepo.findOne(id);
     // Try to update product information with changes comming in request
     this.productRepo.merge(product, changes);
     return this.productRepo.save(product);
   }
 
-  remove(id: number){
+  remove(id: number) {
     return this.productRepo.delete(id);
   }
- 
+
   /*findAll() {
     return this.products;
   }

@@ -1,4 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { User} from './user.entity';
 
 @Entity({name: 'customers'})
 export class Customer {
@@ -10,4 +11,17 @@ export class Customer {
   lastName: string;
   @Column({ type: 'varchar' })
   phone: string;
+
+  @CreateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP(6)'})
+  createdAt : Date;
+
+  @UpdateDateColumn({ type: 'timestamp' , default: () => 'CURRENT_TIMESTAMP(6)'})
+  updatedAt : Date;
+
+  // Reference to user table one to one
+  // This field is the main reference column, it stores user id
+  // Define what is the field to link the relation
+  @OneToOne(() => User , (user) => user.customer, { nullable: true })
+  @JoinColumn()
+  user : User;
 }
